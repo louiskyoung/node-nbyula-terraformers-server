@@ -8,21 +8,26 @@ datasource db {
 }
 
 model Job {
-  id         Int           @id @default(autoincrement())
-  title      String
-  published  Boolean       @default(false)
-  creator    User          @relation(fields: [creatorId], references: [id])
-  creatorId  Int
-  applicants JobsOnUsers[]
-  order      Int           @unique
-  createdAt  DateTime      @default(now())
+  id           Int           @id @default(autoincrement())
+  title        String
+  isArchived   Boolean       @default(false)
+  description  String
+  location     String
+  deadline     DateTime
+  contactPhone String
+  contactEmail String
+  creator      User          @relation(fields: [creatorId], references: [id])
+  creatorId    Int
+  applicants   JobsOnUsers[]
+  order        Float         @unique
+  createdAt    DateTime      @default(now())
 }
 
 model User {
   id             Int           @id @default(autoincrement())
   email          String        @unique
   name           String
-  role           Role          @default(user)
+  role           Role          @default(applicant)
   password       String?
   jobs           Job[]
   interestedJobs JobsOnUsers[]
@@ -30,16 +35,15 @@ model User {
 
 model JobsOnUsers {
   user       User     @relation(fields: [userId], references: [id])
-  userId     Int // relation scalar field (used in the `@relation` attribute above)
+  userId     Int
   job        Job      @relation(fields: [jobId], references: [id])
-  jobId      Int // relation scalar field (used in the `@relation` attribute above)
+  jobId      Int
   assignedAt DateTime @default(now())
-  assignedBy String
 
   @@id([userId, jobId])
 }
 
 enum Role {
-  user
-  admin
+  applicant
+  terraformer
 }

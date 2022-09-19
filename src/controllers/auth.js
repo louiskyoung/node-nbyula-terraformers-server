@@ -11,20 +11,21 @@ const { PrismaClient } = Prisma
 
 const prisma = new PrismaClient()
 
-const register = async ({ body: { name, email, password } }, res) => {
+const register = async ({ body: { name, email, password, role } }, res) => {
   if (!validator.isEmail(email) || !validator.normalizeEmail(email)) {
-    return res.status(400).json('Invalid email was provided.')
+    return res.status(400).json([{ message: 'Invalid email was provided.' }])
   }
   const user = await prisma.user.findFirst({ where: { email } })
 
   if (user) {
-    return res.status(400).json('This email already exists.')
+    return res.status(400).json([{ message: 'This email already exists.' }])
   }
 
   const hashedPassword = await bcrypt.hash(password, 10)
   const newUser = await prisma.user.create({
     data: {
       name,
+      role,
       password: hashedPassword,
       email,
     },
@@ -34,7 +35,7 @@ const register = async ({ body: { name, email, password } }, res) => {
 
 const login = async ({ body: { email, password } }, res) => {
   if (!validator.isEmail(email) || !validator.normalizeEmail(email)) {
-    return res.status(401).json('Wrong credentials provided.')
+    return res.status(401).json([{ message: 'Wrong credentials provided.' }])
   }
   const user = await prisma.user.findFirst({ where: { email } })
 
@@ -45,7 +46,7 @@ const login = async ({ body: { email, password } }, res) => {
       return authResponseHandler(res, user)
     }
   }
-  return res.status(401).json('Wrong credentials provided.')
+  return res.status(401).json([{ message: 'Wrong credentials provided.' }])
 }
 
 const getUserInfo = async (req, res) => {
