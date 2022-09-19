@@ -15,6 +15,12 @@ const authResponseHandler = (res, data, status = 200) => {
   res.status(status).json(data)
 }
 
+const userResponseHandler = (res, data, status = 200) => {
+  trimJSON(data, ['password'])
+  res.status(status).json(data)
+}
+
 module.exports = {
   authResponseHandler,
+  userResponseHandler,
 }

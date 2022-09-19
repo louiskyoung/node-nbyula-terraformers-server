@@ -2,7 +2,10 @@ const Prisma = require('@prisma/client')
 const validator = require('validator')
 const bcrypt = require('bcrypt')
 
-const { authResponseHandler } = require('../helpers/responseHandler')
+const {
+  authResponseHandler,
+  userResponseHandler,
+} = require('../helpers/responseHandler')
 
 const { PrismaClient } = Prisma
 
@@ -45,7 +48,12 @@ const login = async ({ body: { email, password } }, res) => {
   return res.status(401).json('Wrong credentials provided.')
 }
 
+const getUserInfo = async (req, res) => {
+  return userResponseHandler(res, req.user)
+}
+
 module.exports = {
   register,
   login,
+  getUserInfo,
 }
