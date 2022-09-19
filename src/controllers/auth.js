@@ -29,6 +29,23 @@ const register = async ({ body: { name, email, password } }, res) => {
   authResponseHandler(res, newUser, 201)
 }
 
+const login = async ({ body: { email, password } }, res) => {
+  if (!validator.isEmail(email) || !validator.normalizeEmail(email)) {
+    return res.status(401).json('Wrong credentials provided.')
+  }
+  const user = await prisma.user.findFirst({ where: { email } })
+
+  if (user) {
+    const isPasswordMatching = await bcrypt.compare(password, user.password)
+
+    if (isPasswordMatching) {
+      return authResponseHandler(res, user)
+    }
+  }
+  return res.status(401).json('Wrong credentials provided.')
+}
+
 module.exports = {
   register,
+  login,
 }
