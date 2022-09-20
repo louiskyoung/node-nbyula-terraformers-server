@@ -20,10 +20,11 @@ Alone we can do so little; together we can do so much. With Nbyula growing expon
 - Prisma
 - PostgreSQL
 
-## How to install
+## Instruction
 
-- Download and install the latest version of PostgreSQL.
+- Download and install the latest version of PostgreSQL. Make sure to remember your username and password of database while installing.
 - Install the latest vesion of Node.js
 - Copy and paste `.env.example` file and rename it: `.env`
+- Set your own DB, USER, PASSWORD on `.env`.
 - Go to root directory of your node project and run: `npx prisma migrate deploy`
 - Run the following command: `npm start`
