@@ -1,5 +1,4 @@
 const Prisma = require('@prisma/client')
-const { response } = require('express')
 const validator = require('validator')
 
 const { PrismaClient } = Prisma
@@ -32,9 +31,19 @@ const postJob = async ({ body: jobData, user }, res) => {
         creator: {
           select: {
             id: true,
-            email: true,
             name: true,
-            role: true,
+            email: true,
+          },
+        },
+        applicants: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                name: true,
+                email: true,
+              },
+            },
           },
         },
       },
@@ -118,12 +127,31 @@ const markJob = async (
       const job = await prisma.job.update({
         where: {
           id: parseInt(jobId),
-          isArchived: false,
         },
         data: {
           applicants: {
             createMany: {
               data: [{ userId }],
+            },
+          },
+        },
+        include: {
+          creator: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+          applicants: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  email: true,
+                },
+              },
             },
           },
         },
